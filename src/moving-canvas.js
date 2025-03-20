@@ -2,9 +2,11 @@ import * as Objects from "./objects/wall.js";
 
 export class MovingCanvas extends HTMLElement {
 
-    xyBlock /** @type block = {x: number, y: number} */ = {
+    xyBlock /** @type {Pos} */ = {
         x: 50,
         y: 50,
+        w: 10,
+        h: 50
     }
 
     constructor() {
@@ -12,7 +14,8 @@ export class MovingCanvas extends HTMLElement {
         this.attachShadow({ mode: "open" });
 
         let handleNumber = 0;
-        let paused /** @param boolean */ = false
+        let paused /** @type boolean */ = false
+        let block /** @type {Collidable} */;
 
         const canvas = document.createElement("canvas");
         canvas.width = 800;
@@ -24,9 +27,7 @@ export class MovingCanvas extends HTMLElement {
         let speed = 1;
         let growthCounter = 0;
 
-        let snake = [this.xyBlock, this.xyBlock, this.xyBlock, this.xyBlock, this.xyBlock,
-        this.xyBlock, this.xyBlock, this.xyBlock, this.xyBlock, this.xyBlock, this.xyBlock,
-        this.xyBlock, this.xyBlock, this.xyBlock, this.xyBlock,];
+        let snake = [this.xyBlock];
 
         const size = 10;
 
@@ -40,10 +41,8 @@ export class MovingCanvas extends HTMLElement {
                 ctx.fillRect(segment.x, segment.y, size, size);
             });
 
-            Objects.renderWall(ctx);
-
-            moveSnake();
             handleNumber = requestAnimationFrame(draw);
+            moveSnake();
         }
 
         function moveSnake() {
@@ -54,16 +53,26 @@ export class MovingCanvas extends HTMLElement {
             else if (direction === "left") head.x -= speed;
             else if (direction === "right") head.x += speed;
 
+            if (Objects.collisionDetection(head, block)) {
+                console.log('Head: ', head, 'Obstacle: ', block);
+                cancelAnimationFrame(handleNumber);
+            } else snake.pop()
+
             head.x = Math.max(0, Math.min(canvas.width - size, head.x));
             head.y = Math.max(0, Math.min(canvas.height - size, head.y));
 
             snake.unshift(head);
 
-            if (growthCounter % 10 !== 0) {
-                snake.pop();
-            }
+            // if (growthCounter % 10 !== 0) {
+            //     snake.pop();
+            // }
+            //
+            // growthCounter++;
+        }
 
-            growthCounter++;
+        function render() {
+            console.log('rendering')
+            block = Objects.renderObject(ctx, true);
         }
 
         draw();
@@ -78,7 +87,10 @@ export class MovingCanvas extends HTMLElement {
                 console.log('Stopping the animation, animation handle is: ', handleNumber);
                 paused = !paused;
 
-                if (!paused) draw()
+                if (!paused) {
+                    draw();
+                    render();
+                }
             }
         });
     }
