@@ -6,7 +6,7 @@ export class MovingCanvas extends HTMLElement {
         x: 50,
         y: 50,
         w: 10,
-        h: 50
+        h: 10
     }
 
     constructor() {
@@ -15,7 +15,8 @@ export class MovingCanvas extends HTMLElement {
 
         let handleNumber = 0;
         let paused /** @type boolean */ = false
-        let block /** @type {Collidable} */;
+        let block /** @type {Collidable} */
+        let food /** @type {Collidable} */
 
         const canvas = document.createElement("canvas");
         canvas.width = 800;
@@ -25,7 +26,6 @@ export class MovingCanvas extends HTMLElement {
         const ctx = canvas.getContext("2d");
         let direction = "right";
         let speed = 1;
-        let growthCounter = 0;
 
         let snake = [this.xyBlock];
 
@@ -41,6 +41,16 @@ export class MovingCanvas extends HTMLElement {
                 ctx.fillRect(segment.x, segment.y, size, size);
             });
 
+            if (block) {
+                ctx.fillStyle = "red";
+                ctx.fillRect(block.pos.x, block.pos.y, block.pos.w, block.pos.h);
+            }
+
+            if (food) {
+                ctx.fillStyle = "green";
+                ctx.fillRect(food.pos.x, food.pos.y, food.pos.w, food.pos.h);
+            }
+
             handleNumber = requestAnimationFrame(draw);
             moveSnake();
         }
@@ -54,28 +64,52 @@ export class MovingCanvas extends HTMLElement {
             else if (direction === "right") head.x += speed;
 
             if (Objects.collisionDetection(head, block)) {
-                console.log('Head: ', head, 'Obstacle: ', block);
+                console.log('Collistion detection>> ', 'Head: ', head, 'Obstacle: ', block);
                 cancelAnimationFrame(handleNumber);
-            } else snake.pop()
+            }
+
+            if (food && Objects.collisionDetection(head, food)) {
+                console.log("Food consumed!");
+                snake.unshift(head);
+
+                for (let i = 0; i < food.pos.w / size; i++) {
+                    snake.unshift({ ...snake[0] });
+                }
+
+                food = null;
+                renderFood();
+            } else {
+                snake.pop();
+            }
 
             head.x = Math.max(0, Math.min(canvas.width - size, head.x));
             head.y = Math.max(0, Math.min(canvas.height - size, head.y));
 
             snake.unshift(head);
-
-            // if (growthCounter % 10 !== 0) {
-            //     snake.pop();
-            // }
-            //
-            // growthCounter++;
         }
 
-        function render() {
-            console.log('rendering')
+        function renderWall() {
+            if (!block)
+                console.log("Rendering initial obstacle...");
             block = Objects.renderObject(ctx, true);
         }
 
+        function renderFood() {
+            food = {
+                pos: {
+                    x: Math.floor(Math.random() * (canvas.width - size)),
+                    y: Math.floor(Math.random() * (canvas.height - size)),
+                    w: size,
+                    h: size
+                },
+                collidable: true
+            };
+            console.log("New food at:", food);
+        }
+
         draw();
+        renderWall();
+        renderFood();
 
         window.addEventListener("keydown", (e) => {
             if (e.key === "ArrowUp" && direction !== "down") direction = "up";
@@ -89,7 +123,6 @@ export class MovingCanvas extends HTMLElement {
 
                 if (!paused) {
                     draw();
-                    render();
                 }
             }
         });
