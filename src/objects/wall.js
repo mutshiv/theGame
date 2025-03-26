@@ -1,12 +1,12 @@
-
 const objectDim /* @type {BlockDimensions} */ = {
     w: 10,
     h: 50
 }
 
-/** @param {CanvasRenderingContext2D} ctx 
+/** 
+ *  @param {CanvasRenderingContext2D} ctx 
  *  @param {boolean} collidable 
- * @returns {Collidable}
+ *  @returns {Collidable}
  */
 export function renderObject(ctx, collidable) {
     const renderPos /* @type {Pos} */ = {
@@ -41,9 +41,13 @@ export function collisionDetection(headPos, objPos) {
 }
 
 /**
- * @returns {Collidable} collidable
+ * @param {CanvasRenderingContext2D} ctx 
+ * @param {Pos} objPos 
+ * @param {boolean} wall 
  */
-export function drawObstacle() {
+export function drawObstacle(ctx, objPos, wall) {
+    ctx.fillStyle = (wall ? "red" : "green");
+    ctx.fillRect(objPos.x, objPos.y, objPos.w, objPos.h);
 }
 
 /**

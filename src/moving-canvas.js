@@ -1,4 +1,5 @@
 import * as Objects from "./objects/wall.js";
+import * as GamePlay from "./gameplay/game-play.js";
 
 export class MovingCanvas extends HTMLElement {
 
@@ -32,9 +33,8 @@ export class MovingCanvas extends HTMLElement {
         const size = 10;
 
         function draw() {
-
             ctx.fillStyle = "grey";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, canvas.width + 550, canvas.height + 250);
 
             ctx.fillStyle = "black";
             snake.forEach((segment) => {
@@ -42,13 +42,11 @@ export class MovingCanvas extends HTMLElement {
             });
 
             if (block) {
-                ctx.fillStyle = "red";
-                ctx.fillRect(block.pos.x, block.pos.y, block.pos.w, block.pos.h);
+                Objects.drawObstacle(ctx, block.pos, true)
             }
 
             if (food) {
-                ctx.fillStyle = "green";
-                ctx.fillRect(food.pos.x, food.pos.y, food.pos.w, food.pos.h);
+                Objects.drawObstacle(ctx, food.pos, false)
             }
 
             handleNumber = requestAnimationFrame(draw);
@@ -64,12 +62,10 @@ export class MovingCanvas extends HTMLElement {
             else if (direction === "right") head.x += speed;
 
             if (Objects.collisionDetection(head, block)) {
-                console.log('Collistion detection>> ', 'Head: ', head, 'Obstacle: ', block);
                 cancelAnimationFrame(handleNumber);
             }
 
             if (food && Objects.collisionDetection(head, food)) {
-                console.log("Food consumed!");
                 snake.unshift(head);
 
                 for (let i = 0; i < food.pos.w / size; i++) {
@@ -110,6 +106,8 @@ export class MovingCanvas extends HTMLElement {
         draw();
         renderWall();
         renderFood();
+
+        console.log(GamePlay.initializeGameState(), ' game init');
 
         window.addEventListener("keydown", (e) => {
             if (e.key === "ArrowUp" && direction !== "down") direction = "up";
