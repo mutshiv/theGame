@@ -24,7 +24,6 @@ declare global {
         lives: number,
         speed: number,
         walls: Collidable[],
-        food: Collidable[]
     }
 }
 

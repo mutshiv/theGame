@@ -1,6 +1,8 @@
+import * as args from "../utils/args.js"
+
 const objectDim /* @type {BlockDimensions} */ = {
     w: 10,
-    h: 50
+    h: 10
 }
 
 /** 
@@ -9,11 +11,12 @@ const objectDim /* @type {BlockDimensions} */ = {
  *  @returns {Collidable}
  */
 export function renderObject(ctx, collidable) {
+    const dims /** @type {BlockDimensions} */ = args.canvasDimensions();
     const renderPos /* @type {Pos} */ = {
-        x: randInt(750, 1),
-        y: randInt(400, 50),
+        x: randInt(dims.w, dims.x),
+        y: randInt(dims.h, dims.y),
         w: objectDim.w,
-        h: randInt(250, 50),
+        h: randInt(dims.h, dims.y),
     }
     ctx.fillStyle = (collidable ? "red" : "green");
     ctx.fillRect(renderPos.x, renderPos.y, renderPos.w, renderPos.h);
@@ -55,6 +58,6 @@ export function drawObstacle(ctx, objPos, wall) {
 * @param {number} min 
 * @returns {number}
 */
-function randInt(max, min) {
+export function randInt(max, min) {
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
