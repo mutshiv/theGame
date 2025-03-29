@@ -2,12 +2,12 @@ import * as Objects from "../objects/wall.js";
 let gamePlay /** @type {GameState} */;
 
 /**
- * @returns {GameState}
+ * @returns {GameState} gameState
 */
 export function initializeGameState() {
     gamePlay = {
         level: 1,
-        speed: 1,
+        speed: 3,
         foodPos: null,
         foodConsumption: 0,
         walls: [],
@@ -44,7 +44,7 @@ function interception(gs, ctx) {
         newObstacle = Objects.renderObject(ctx, true);
         overlapping = gs.walls.some(obstacle =>
             Objects.collisionDetection(newObstacle.pos, obstacle.pos)
-        ) || Objects.collisionDetection(newObstacle.pos, gs.foodPos);
+        ) && Objects.collisionDetection(newObstacle.pos, gs.foodPos);
     } while (overlapping);
 
     gs.walls.push(newObstacle);

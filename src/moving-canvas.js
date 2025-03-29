@@ -45,12 +45,6 @@ export class MovingCanvas extends HTMLElement {
                 ctx.fillRect(segment.x, segment.y, size, size);
             });
 
-            // if (gameState && gameState.level >= 2 && block) {
-            //     Objects.drawObstacle(ctx, block.pos, true)
-            //     gameState.walls.push(block.pos);
-            //     console.log('GameState in draw', gameState);
-            // }
-
             gameState.walls.forEach(obstacle => {
                 Objects.drawObstacle(ctx, obstacle.pos, true);
             });
@@ -71,13 +65,16 @@ export class MovingCanvas extends HTMLElement {
             else if (direction === "left") head.x -= gameState.speed;
             else if (direction === "right") head.x += gameState.speed;
 
-            if (Objects.collisionDetection(head, block)) {
-                cancelAnimationFrame(handleNumber);
-            }
+            gameState.walls.forEach(wall => {
+                if (Objects.collisionDetection(head, wall))
+                    cancelAnimationFrame(handleNumber);
+            });
 
             if (food && Objects.collisionDetection(head, food)) {
                 gameState.foodConsumption++;
+                gameState.food = food;
                 snake.unshift({ ...snake[0] });
+
                 renderFood();
 
                 if (gameState.foodConsumption % 10 === 0) {

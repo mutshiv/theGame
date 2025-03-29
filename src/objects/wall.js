@@ -12,11 +12,13 @@ const objectDim /* @type {BlockDimensions} */ = {
  */
 export function renderObject(ctx, collidable) {
     const dims /** @type {BlockDimensions} */ = args.canvasDimensions();
+    const objOrientation = Math.random() < 0.5;
+
     const renderPos /* @type {Pos} */ = {
         x: randInt(dims.w, dims.x),
         y: randInt(dims.h, dims.y),
-        w: objectDim.w,
-        h: randInt(dims.h, dims.y),
+        w: objOrientation ? objectDim.w : randInt(dims.h, dims.x),
+        h: objOrientation ? randInt(dims.h, dims.y) : objectDim.h,
     }
     ctx.fillStyle = (collidable ? "red" : "green");
     ctx.fillRect(renderPos.x, renderPos.y, renderPos.w, renderPos.h);
@@ -27,7 +29,7 @@ export function renderObject(ctx, collidable) {
 /**
  * @param {Pos} headPos 
  * @param {Collidable} objPos 
- * @returns {boolean}
+ * @returns {boolean} collisionDetected
  */
 export function collisionDetection(headPos, objPos) {
     if (objPos === undefined) return false;
