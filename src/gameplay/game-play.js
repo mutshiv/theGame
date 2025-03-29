@@ -1,3 +1,4 @@
+import * as Objects from "../objects/wall.js";
 let gamePlay /** @type {GameState} */;
 
 /**
@@ -7,7 +8,8 @@ export function initializeGameState() {
     gamePlay = {
         level: 1,
         speed: 1,
-        lives: 1,
+        foodPos: null,
+        foodConsumption: 0,
         walls: [],
     }
     return gamePlay
@@ -15,28 +17,35 @@ export function initializeGameState() {
 
 /**
  * @param {GameState} gs 
- * @param {number} level 
- * @returns {GameState}
+ * @param {CanvasRenderingContext2D} ctx 
+ * @returns {GameState} gs
  */
-export function levelRender(gs, level) {
-    if (level % 10 === 0) {
-        gs.level++;
-        gs.speed += 0.5;
-        return gs;
+export function levelRender(gs, ctx) {
+    gs.level++;
+    gs.speed += 0.5;
+
+    if (gs.level > 1) {
+        interception(gs, ctx);
     }
+
+    console.log(`Level Up! Now at Level ${gs.level}, Speed: ${gs.speed}`);
     return gs;
 }
 
 /**
  * @param {GameState} gs
- * @param {Collidable} obstacle 
- * @returns {boolean}
+ * @param {CanvasRenderingContext2D} ctx 
 */
-function interception(gs, obstacle) {
-    gs.walls.forEach(w => {
-        if (w.pos.x === obstacle.pos.x && w.pos.y === obstacle.pos.y) {
-            return true;
-        }
-    });
-    return false;
+function interception(gs, ctx) {
+    let newObstacle;
+    let overlapping;
+
+    do {
+        newObstacle = Objects.renderObject(ctx, true);
+        overlapping = gs.walls.some(obstacle =>
+            Objects.collisionDetection(newObstacle.pos, obstacle.pos)
+        ) || Objects.collisionDetection(newObstacle.pos, gs.foodPos);
+    } while (overlapping);
+
+    gs.walls.push(newObstacle);
 }

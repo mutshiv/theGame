@@ -1,5 +1,5 @@
 import * as Objects from "./objects/wall.js";
-import * as GamePlay from "./gameplay/game-play.js";
+import * as GameState from "./gameplay/game-play.js";
 import * as args from "./utils/args.js";
 
 export class MovingCanvas extends HTMLElement {
@@ -20,20 +20,18 @@ export class MovingCanvas extends HTMLElement {
         let paused /** @type boolean */ = false;
         let block /** @type {Collidable} */;
         let food /** @type {Collidable} */;
-        let gamePlay /** @type {GameState} */;
-        let foodConsumption /** @type {number} */ = 0;
+        let gameState /** @type {GameState} */;
+        let cx /** @type {number} */ = this.dims.x;
+        let cy /** @type {number} */ = this.dims.y;
 
         const canvas = document.createElement("canvas");
         canvas.width = this.dims.w;
         canvas.height = this.dims.h;
-        let cx /** @type {number} */ = this.dims.x;
-        let cy /** @type {number} */ = this.dims.y;
 
         this.shadowRoot.appendChild(canvas);
 
         const ctx = canvas.getContext("2d");
         let direction = "right";
-        let speed = 1;
         let snake = [this.xyBlock];
 
         const size = 10;
@@ -47,11 +45,15 @@ export class MovingCanvas extends HTMLElement {
                 ctx.fillRect(segment.x, segment.y, size, size);
             });
 
-            if (gamePlay && gamePlay.level >= 2 && block) {
-                Objects.drawObstacle(ctx, block.pos, true)
-                gamePlay.walls.push(block.pos);
-                console.log('GameState in draw', gamePlay);
-            }
+            // if (gameState && gameState.level >= 2 && block) {
+            //     Objects.drawObstacle(ctx, block.pos, true)
+            //     gameState.walls.push(block.pos);
+            //     console.log('GameState in draw', gameState);
+            // }
+
+            gameState.walls.forEach(obstacle => {
+                Objects.drawObstacle(ctx, obstacle.pos, true);
+            });
 
             if (food) {
                 Objects.drawObstacle(ctx, food.pos, false)
@@ -64,30 +66,24 @@ export class MovingCanvas extends HTMLElement {
         function moveSnake() {
             const head = { ...snake[0] };
 
-            if (direction === "up") head.y -= speed;
-            else if (direction === "down") head.y += speed;
-            else if (direction === "left") head.x -= speed;
-            else if (direction === "right") head.x += speed;
+            if (direction === "up") head.y -= gameState.speed;
+            else if (direction === "down") head.y += gameState.speed;
+            else if (direction === "left") head.x -= gameState.speed;
+            else if (direction === "right") head.x += gameState.speed;
 
             if (Objects.collisionDetection(head, block)) {
                 cancelAnimationFrame(handleNumber);
             }
 
             if (food && Objects.collisionDetection(head, food)) {
-                snake.unshift(head);
-                foodConsumption++;
-
-                for (let i = 0; i < food.pos.w / size; i++) {
-                    snake.unshift({ ...snake[0] });
-                }
-
-                gamePlay = GamePlay.levelRender(gamePlay, foodConsumption);
-                console.log('GameState', gamePlay, 'foodConsumption count', foodConsumption);
-
-                renderWall();
-
-                food = null;
+                gameState.foodConsumption++;
+                snake.unshift({ ...snake[0] });
                 renderFood();
+
+                if (gameState.foodConsumption % 10 === 0) {
+                    gameState = GameState.levelRender(gameState, ctx);
+                }
+                console.log('GameState', gameState, 'foodConsumption count', gameState.foodConsumption);
             } else {
                 snake.pop();
             }
@@ -96,11 +92,6 @@ export class MovingCanvas extends HTMLElement {
             head.y = Math.max(0, Math.min(canvas.height - size, head.y));
 
             snake.unshift(head);
-        }
-
-        function renderWall() {
-            if (gamePlay.level > 1)
-                block = Objects.renderObject(ctx, true);
         }
 
         function renderFood() {
@@ -114,7 +105,7 @@ export class MovingCanvas extends HTMLElement {
                 collidable: true
             };
         }
-        gamePlay = GamePlay.initializeGameState();
+        gameState = GameState.initializeGameState();
 
         draw();
         renderFood();

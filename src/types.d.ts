@@ -22,6 +22,7 @@ declare global {
     type GameState = {
         level: number,
         lives: number,
+        foodPos: Pos,
         speed: number,
         walls: Collidable[],
     }
