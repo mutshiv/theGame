@@ -1,0 +1,90 @@
+.game-over-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.game-over-modal {
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    border: 2px solid #ff4444;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    max-width: 400px;
+    width: 90%;
+    animation: popIn 0.4s ease-out;
+}
+
+.game-over-modal h1 {
+    color: #ff4444;
+    font-size: 2.5em;
+    margin: 0 0 20px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+.game-over-modal p {
+    margin: 10px 0;
+    font-size: 1.2em;
+}
+
+.game-over-modal button {
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.game-over-modal button:hover {
+    background: #ff6666;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
+}
+
+.game-over-modal button:active {
+    transform: translateY(0);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.7) translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 0 0 10px #ff4444;
+    }
+    to {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 0 0 20px #ff4444, 0 0 30px #ff4444;
+    }
+}

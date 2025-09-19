@@ -2,6 +2,7 @@ import * as Objects from "./objects/wall.js";
 import * as GameState from "./gameplay/game-play.js";
 import * as args from "./utils/args.js";
 import * as UI from "./ui/gameStats.js";
+import * as GameOver from "./ui/gameOver.js";
 
 export class MovingCanvas extends HTMLElement {
 
@@ -39,6 +40,11 @@ export class MovingCanvas extends HTMLElement {
 
         const size = 10;
 
+        const showGameOver = () => {
+            const gameOverModal = GameOver.drawGameOverModal(gameState);
+            document.body.appendChild(gameOverModal);
+        };
+
         const draw = () => {
             ctx.fillStyle = "grey";
             ctx.fillRect(cx, cy, canvas.width, canvas.height);
@@ -69,12 +75,15 @@ export class MovingCanvas extends HTMLElement {
             else if (this.direction === "right") head.x += gameState.speed;
 
             gameState.walls.forEach(wall => {
-                if (Objects.collisionDetection(head, wall))
+                if (Objects.collisionDetection(head, wall)) {
                     this.handleNumber = cancelAnimationFrame(this.handleNumber);
+                    showGameOver();
+                }
             });
 
             if (GameState.selfCannibalism(this.snake)) {
                 this.handleNumber = cancelAnimationFrame(this.handleNumber);
+                showGameOver();
             }
 
             if (food && Objects.collisionDetection(head, food)) {
@@ -93,10 +102,16 @@ export class MovingCanvas extends HTMLElement {
             }
 
             // Check boundary collision BEFORE adding head to snake
-            if (head.x < cx || head.x > cx + canvas.width - size ||
-                head.y < cy || head.y > cy + canvas.height - size) {
-                console.log('Game Over: Hit boundary!');
+            // Snake should stay completely within the grey rectangle
+            if (head.x < cx || head.x >= canvas.width ||
+                head.y < cy || head.y >= canvas.height) {
+                console.log('BOUNDARY COLLISION DETECTED!');
+                console.log('Snake head position:', head);
+                console.log('Canvas bounds: cx=' + cx + ', cy=' + cy + ', width=' + canvas.width + ', height=' + canvas.height);
+                console.log('Valid x range: [' + cx + ' to ' + (cx + canvas.width - size) + ']');
+                console.log('Valid y range: [' + cy + ' to ' + (cy + canvas.height - size) + ']');
                 this.handleNumber = cancelAnimationFrame(this.handleNumber);
+                showGameOver();
                 return;
             }
 
