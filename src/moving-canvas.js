@@ -92,8 +92,16 @@ export class MovingCanvas extends HTMLElement {
                 this.snake.pop();
             }
 
+<<<<<<< Updated upstream
             if (head.x < cx || head.x > canvas.width - size + cx || head.y < cy || head.y > canvas.height - size + cy) {
                 return this.handleNumber = cancelAnimationFrame(this.handleNumber);
+=======
+            if (head.x < 0 || head.x >= canvas.width - size ||
+                head.y < 0 || head.y >= canvas.height - size) {
+                console.log('Game Over: Hit boundary!');
+                cancelAnimationFrame(handleNumber);
+                return;
+>>>>>>> Stashed changes
             }
 
             this.snake.unshift(head);
