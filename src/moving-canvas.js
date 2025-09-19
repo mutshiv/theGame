@@ -1,6 +1,7 @@
 import * as Objects from "./objects/wall.js";
 import * as GameState from "./gameplay/game-play.js";
 import * as args from "./utils/args.js";
+import * as UI from "./ui/gameStats.js";
 
 export class MovingCanvas extends HTMLElement {
 
@@ -18,7 +19,6 @@ export class MovingCanvas extends HTMLElement {
 
         let handleNumber /** @type {number} */ = 0;
         let paused /** @type boolean */ = false;
-        let block /** @type {Collidable} */;
         let food /** @type {Collidable} */;
         let gameState /** @type {GameState} */;
         let cx /** @type {number} */ = this.dims.x;
@@ -27,21 +27,24 @@ export class MovingCanvas extends HTMLElement {
         const canvas = document.createElement("canvas");
         canvas.width = this.dims.w;
         canvas.height = this.dims.h;
+        canvas.xmin = cx;
+        canvas.ymin = cy;
 
         this.shadowRoot.appendChild(canvas);
 
         const ctx = canvas.getContext("2d");
-        let direction = "right";
-        let snake = [this.xyBlock];
+        this.direction = "right";
+        this.snake = [this.xyBlock];
+        this.handleNumber = 0;
 
         const size = 10;
 
-        function draw() {
+        const draw = () => {
             ctx.fillStyle = "grey";
             ctx.fillRect(cx, cy, canvas.width, canvas.height);
 
             ctx.fillStyle = "black";
-            snake.forEach((segment) => {
+            this.snake.forEach((segment) => {
                 ctx.fillRect(segment.x, segment.y, size, size);
             });
 
@@ -53,42 +56,47 @@ export class MovingCanvas extends HTMLElement {
                 Objects.drawObstacle(ctx, food.pos, false)
             }
 
-            handleNumber = requestAnimationFrame(draw);
+            this.handleNumber = requestAnimationFrame(draw);
             moveSnake();
         }
 
-        function moveSnake() {
-            const head = { ...snake[0] };
+        const moveSnake = () => {
+            const head = { ...this.snake[0] };
 
-            if (direction === "up") head.y -= gameState.speed;
-            else if (direction === "down") head.y += gameState.speed;
-            else if (direction === "left") head.x -= gameState.speed;
-            else if (direction === "right") head.x += gameState.speed;
+            if (this.direction === "up") head.y -= gameState.speed;
+            else if (this.direction === "down") head.y += gameState.speed;
+            else if (this.direction === "left") head.x -= gameState.speed;
+            else if (this.direction === "right") head.x += gameState.speed;
 
             gameState.walls.forEach(wall => {
                 if (Objects.collisionDetection(head, wall))
-                    cancelAnimationFrame(handleNumber);
+                    this.handleNumber = cancelAnimationFrame(this.handleNumber);
             });
+
+            if (GameState.selfCannibalism(this.snake)) {
+                this.handleNumber = cancelAnimationFrame(this.handleNumber);
+            }
 
             if (food && Objects.collisionDetection(head, food)) {
                 gameState.foodConsumption++;
                 gameState.food = food;
-                snake.unshift({ ...snake[0] });
+                this.snake.unshift({ ...this.snake[0] });
 
                 renderFood();
 
                 if (gameState.foodConsumption % 10 === 0) {
                     gameState = GameState.levelRender(gameState, ctx);
                 }
-                console.log('GameState', gameState, 'foodConsumption count', gameState.foodConsumption);
+                console.log('GameState', gameState, 'foodConsumption count', gameState.foodConsumption, 'Snake pos:', this.snake);
             } else {
-                snake.pop();
+                this.snake.pop();
             }
 
-            head.x = Math.max(0, Math.min(canvas.width - size, head.x));
-            head.y = Math.max(0, Math.min(canvas.height - size, head.y));
+            if (head.x < cx || head.x > canvas.width - size + cx || head.y < cy || head.y > canvas.height - size + cy) {
+                return this.handleNumber = cancelAnimationFrame(this.handleNumber);
+            }
 
-            snake.unshift(head);
+            this.snake.unshift(head);
         }
 
         function renderFood() {
@@ -103,18 +111,19 @@ export class MovingCanvas extends HTMLElement {
             };
         }
         gameState = GameState.initializeGameState();
+        this.shadowRoot.appendChild(UI.drawGameStatsPanel(gameState));
 
         draw();
         renderFood();
 
         window.addEventListener("keydown", (e) => {
-            if (e.key === "ArrowUp" && direction !== "down") direction = "up";
-            else if (e.key === "ArrowDown" && direction !== "up") direction = "down";
-            else if (e.key === "ArrowLeft" && direction !== "right") direction = "left";
-            else if (e.key === "ArrowRight" && direction !== "left") direction = "right";
+            if (e.key === "ArrowUp" && this.direction !== "down") this.direction = "up";
+            else if (e.key === "ArrowDown" && this.direction !== "up") this.direction = "down";
+            else if (e.key === "ArrowLeft" && this.direction !== "right") this.direction = "left";
+            else if (e.key === "ArrowRight" && this.direction !== "left") this.direction = "right";
             else if (e.key === ' ') {
-                cancelAnimationFrame(handleNumber);
-                console.log('Stopping the animation, animation handle is: ', handleNumber);
+                this.handleNumber = cancelAnimationFrame(this.handleNumber);
+                console.log('Stopping the animation, animation handle is: ', this.handleNumber);
                 paused = !paused;
 
                 if (!paused) {

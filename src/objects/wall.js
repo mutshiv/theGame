@@ -35,12 +35,9 @@ export function collisionDetection(headPos, objPos) {
     if (objPos === undefined) return false;
     if (!objPos || !objPos.collidable) return false;
 
-    if (headPos.x < objPos.pos.x + objPos.pos.w &&
-        headPos.x + headPos.w > objPos.pos.x &&
-        headPos.y < objPos.pos.y + objPos.pos.h &&
-        headPos.y + headPos.h > objPos.pos.y && objPos.collidable) {
-        return true;
-    }
+    if (headPos.x < objPos.pos.x + objPos.pos.w && headPos.x + headPos.w > objPos.pos.x && headPos.y < objPos.pos.y + objPos.pos.h && headPos.y + headPos.h > objPos.pos.y) {
+			return true;
+		}
 
     return false;
 }

@@ -7,7 +7,7 @@ let gamePlay /** @type {GameState} */;
 export function initializeGameState() {
     gamePlay = {
         level: 1,
-        speed: 3,
+        speed: 1,
         foodPos: null,
         foodConsumption: 0,
         walls: [],
@@ -48,4 +48,20 @@ function interception(gs, ctx) {
     } while (overlapping);
 
     gs.walls.push(newObstacle);
+}
+
+/**
+ * @param {Pos[]} snake
+ * @returns {boolean}
+ */
+export function selfCannibalism(snake) {
+    if (snake.length < 4)
+        return false;
+
+    for (let i = 4; i < snake.length; i++) {
+        if (Objects.collisionDetection(snake[0], {pos: snake[i], collidable: true}))
+            return true;
+    }
+
+    return false;
 }
