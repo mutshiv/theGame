@@ -22,10 +22,27 @@ export function drawGameStatsPanel(gs) {
 
 /**
  * @param {GameState} gs 
+ * @param {ShadowRoot} shadow
+ */
+export function updateStats(gs, shadow) {
+    console.log(gs);
+    const levelStat = shadow.querySelector('#level');
+    levelStat.textContent = `Level: ${gs.level}`;
+
+    const speedStat = shadow.querySelector('#speedStat');
+    speedStat.textContent = `Speed: ${gs.speed}`;
+
+    const scoreStat = shadow.querySelector('#score');
+    scoreStat.textContent = `Score: ${gs.foodConsumption || 0}`;
+}
+
+/**
+ * @param {GameState} gs 
  * @returns {HTMLElement}
  */
 function drawContent(gs) {
     const container = document.createElement('div');
+    container.className = 'container';
 
     const title = document.createElement('div');
     title.textContent = 'Snake Game Player Stats';
@@ -33,12 +50,15 @@ function drawContent(gs) {
     title.style.marginBottom = '8px';
 
     const levelStat = document.createElement('div');
+    levelStat.id = 'level';
     levelStat.textContent = `Level: ${gs.level}`;
 
     const speedStat = document.createElement('div');
+    speedStat.id = 'speedStat';
     speedStat.textContent = `Speed: ${gs.speed}`;
 
     const scoreStat = document.createElement('div');
+    scoreStat.id = 'score';
     scoreStat.textContent = `Score: ${gs.foodConsumption || 0}`;
 
     container.appendChild(title);
@@ -48,4 +68,6 @@ function drawContent(gs) {
 
     return container;
 }
+
+
 

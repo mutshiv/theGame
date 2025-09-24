@@ -15,7 +15,7 @@ export function renderObject(ctx, collidable) {
     const objOrientation = Math.random() < 0.5;
 
     const renderPos /* @type {Pos} */ = {
-        x: randInt(dims.w, dims.x),
+        x: randInt(dims.w, dims.x), 
         y: randInt(dims.h, dims.y),
         w: objOrientation ? objectDim.w : randInt(dims.h, dims.x),
         h: objOrientation ? randInt(dims.h, dims.y) : objectDim.h,
@@ -35,7 +35,10 @@ export function collisionDetection(headPos, objPos) {
     if (objPos === undefined) return false;
     if (!objPos || !objPos.collidable) return false;
 
-    if (headPos.x < objPos.pos.x + objPos.pos.w && headPos.x + headPos.w > objPos.pos.x && headPos.y < objPos.pos.y + objPos.pos.h && headPos.y + headPos.h > objPos.pos.y) {
+    if (headPos.x < objPos.pos.x + objPos.pos.w
+        && headPos.x + headPos.w > objPos.pos.x
+        && headPos.y < objPos.pos.y + objPos.pos.h
+        && headPos.y + headPos.h > objPos.pos.y) {
 			return true;
 		}
 

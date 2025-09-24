@@ -92,6 +92,7 @@ export class MovingCanvas extends HTMLElement {
                 this.snake.unshift({ ...this.snake[0] });
 
                 renderFood();
+                UI.updateStats(gameState, this.shadowRoot);
 
                 if (gameState.foodConsumption % 10 === 0) {
                     gameState = GameState.levelRender(gameState, ctx);
@@ -103,13 +104,8 @@ export class MovingCanvas extends HTMLElement {
 
             // Check boundary collision BEFORE adding head to snake
             // Snake should stay completely within the grey rectangle
-            if (head.x < cx || head.x >= canvas.width ||
-                head.y < cy || head.y >= canvas.height) {
-                console.log('BOUNDARY COLLISION DETECTED!');
-                console.log('Snake head position:', head);
-                console.log('Canvas bounds: cx=' + cx + ', cy=' + cy + ', width=' + canvas.width + ', height=' + canvas.height);
-                console.log('Valid x range: [' + cx + ' to ' + (cx + canvas.width - size) + ']');
-                console.log('Valid y range: [' + cy + ' to ' + (cy + canvas.height - size) + ']');
+            if (head.x < cx || head.x === canvas.width - size ||
+                head.y < cy || head.y === canvas.height - size) {
                 this.handleNumber = cancelAnimationFrame(this.handleNumber);
                 showGameOver();
                 return;
@@ -154,3 +150,5 @@ export class MovingCanvas extends HTMLElement {
 }
 
 customElements.define("moving-canvas", MovingCanvas);
+
+

@@ -5,6 +5,6 @@
     "jsdom": "^27.0.0"
   },
   "scripts": {
-    "test": "node src/objects/collisionDetection.test.js && node src/moving-canvas.test.js"
+    "test": "node --test test/"
   }
 }

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert";
-import { collisionDetection } from "./wall.js";
+import { collisionDetection } from "../src/objects/wall.js";
 
 /** @typedef {{x: number, y: number, w: number, h: number}} Position */
 /** @typedef {{pos: Position, collidable: boolean}} Collidable */

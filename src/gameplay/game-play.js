@@ -6,10 +6,10 @@ let gamePlay /** @type {GameState} */;
 */
 export function initializeGameState() {
     gamePlay = {
-        level: 1,
-        speed: 20,
+        level: 3,
+        speed: 5,
         foodPos: null,
-        foodConsumption: 0,
+        foodConsumption: 8,
         walls: [],
     }
     return gamePlay
