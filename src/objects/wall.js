@@ -13,25 +13,10 @@ const objectDim /* @type {BlockDimensions} */ = {
 export function renderObject(ctx, collidable) {
     const dims /** @type {BlockDimensions} */ = args.canvasDimensions();
     const boundary /** {number} */ = 20;
+    const objOrientation = Math.random() < 0.5;
+
     let renderPos /* @type {Pos} */;
 
-    /*do
-    {
-        const objOrientation = Math.random() < 0.5;
-        renderPos = {
-            x: randInt(dims.w, dims.x), 
-            y: randInt(dims.h, dims.y),
-            w: objOrientation ? objectDim.w : randInt(dims.w, dims.x),
-            h: objOrientation ? randInt(dims.h, dims.y) : objectDim.h,
-        };
-    }
-    while (
-        renderPos.x < dims.x + boundary - 20 ||
-        renderPos.x + renderPos.y > dims.x + dims.w - boundary - 20||
-        renderPos.y < dims.y + boundary - 20 ||
-        renderPos.y + renderPos.h > dims.y + dims.h - boundary - 20
-    );*/
-    const objOrientation = Math.random() < 0.5;
     renderPos = withBoundsWalls(dims, objOrientation);
 
     ctx.fillStyle = (collidable ? "red" : "green");
@@ -95,5 +80,5 @@ export function drawObstacle(ctx, objPos, wall) {
 * @returns {number}
 */
 export function randInt(max, min) {
-    return Math.floor(Math.random() * (max - min + 1) + min)
+    return Math.floor(Math.random() * (max - min) + min)
 }

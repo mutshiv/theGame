@@ -9,8 +9,8 @@ export function drawGameStatsPanel(gs) {
     panel.style.right = "10px";
     panel.style.width = "400px";
     panel.style.height = "120px";
-    panel.style.background = "rgba(0, 0, 0, 0.7)";
-    panel.style.color = "white";
+    panel.style.background = "cadetblue";
+    panel.style.color = "black";
     panel.style.padding = "10px";
     panel.style.cursor = "grab";
     panel.style.borderRadius = "5px";
@@ -32,7 +32,7 @@ export function updateStats(gs, shadow) {
     speedStat.textContent = `Speed: ${gs.speed}`;
 
     const scoreStat = shadow.querySelector('#score');
-    scoreStat.textContent = `Score: ${gs.foodConsumption || 0}`;
+    scoreStat.textContent = `Score: ${gs.foodConsumption}`;
 }
 
 /**
@@ -58,15 +58,12 @@ function drawContent(gs) {
 
     const scoreStat = document.createElement('div');
     scoreStat.id = 'score';
-    scoreStat.textContent = `Score: ${gs.foodConsumption || 0}`;
+    scoreStat.textContent = `Score: ${gs.foodConsumption}`;
 
     container.appendChild(title);
     container.appendChild(scoreStat);
-    container.appendChild(speedStat);
     container.appendChild(levelStat);
+    container.appendChild(speedStat);
 
     return container;
 }
-
-
-

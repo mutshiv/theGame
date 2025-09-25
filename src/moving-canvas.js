@@ -3,6 +3,7 @@ import * as GameState from "./gameplay/game-play.js";
 import * as args from "./utils/args.js";
 import * as UI from "./ui/gameStats.js";
 import * as GameOver from "./ui/gameOver.js";
+import * as btn from "./ui/button.js";
 
 export class MovingCanvas extends HTMLElement {
 
@@ -24,6 +25,7 @@ export class MovingCanvas extends HTMLElement {
         let gameState /** @type {GameState} */;
         let cx /** @type {number} */ = this.dims.x;
         let cy /** @type {number} */ = this.dims.y;
+        let isPlaying /** @type boolean */ = false;
 
         const canvas = document.createElement("canvas");
         canvas.width = this.dims.w;
@@ -45,6 +47,10 @@ export class MovingCanvas extends HTMLElement {
             document.body.appendChild(gameOverModal);
         };
 
+        /**
+         * this is actually a re-render.
+         * it re-renders what has already be rendered before and adds new renders.
+         */
         const draw = () => {
             ctx.fillStyle = "grey";
             ctx.fillRect(cx, cy, canvas.width, canvas.height);
@@ -124,21 +130,11 @@ export class MovingCanvas extends HTMLElement {
                 collidable: true
             };
         }
+
         gameState = GameState.initializeGameState();
         this.shadowRoot.appendChild(UI.drawGameStatsPanel(gameState));
 
-        // TODO : this need to go to its own UI component
-        //        should be a start/pause action
-        const btnStart = document.createElement('button')
-        btnStart.textContent = 'Start'
-        btnStart.style.border = 'solid'
-        btnStart.style.background = 'green'
-        btnStart.style.cursor = 'pointer '
-
-        btnStart.addEventListener('click', () => {
-            draw();
-            renderFood();
-        });
+        const btnStart = btn.btnStart(isPlaying, draw, renderFood);
         this.shadowRoot.appendChild(btnStart);
 
         window.addEventListener("keydown", (e) => {

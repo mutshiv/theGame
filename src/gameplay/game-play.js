@@ -35,15 +35,14 @@ export function levelRender(gs, ctx) {
  * @param {CanvasRenderingContext2D} ctx 
 */
 function interception(gs, ctx) {
-    let newObstacle;
+    let newObstacle /** @type Collidable */;
     let overlapping;
 
     do {
         newObstacle = Objects.renderObject(ctx, true);
-//        overlapping = cd.hasCollision(newObstacle, gs.walls)
         overlapping = gs.walls.some(obstacle =>
             Objects.collisionDetection(newObstacle.pos, obstacle.pos)
-        ) && Objects.collisionDetection(newObstacle.pos, gs.foodPos);
+        ) || Objects.collisionDetection(newObstacle.pos, gs.foodPos);
     } while (overlapping);
 
     gs.walls.push(newObstacle);
