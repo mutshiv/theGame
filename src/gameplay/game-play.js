@@ -1,18 +1,17 @@
 import * as Objects from "../objects/wall.js";
-let gamePlay /** @type {GameState} */;
+import * as cd from "../physics/collisionDetection.js";
 
 /**
  * @returns {GameState} gameState
 */
 export function initializeGameState() {
-    gamePlay = {
+    return {
         level: 3,
         speed: 5,
         foodPos: null,
-        foodConsumption: 8,
+        foodConsumption: 0,
         walls: [],
     }
-    return gamePlay
 }
 
 /**
@@ -28,7 +27,6 @@ export function levelRender(gs, ctx) {
         interception(gs, ctx);
     }
 
-    console.log(`Level Up! Now at Level ${gs.level}, Speed: ${gs.speed}`);
     return gs;
 }
 
@@ -42,6 +40,7 @@ function interception(gs, ctx) {
 
     do {
         newObstacle = Objects.renderObject(ctx, true);
+//        overlapping = cd.hasCollision(newObstacle, gs.walls)
         overlapping = gs.walls.some(obstacle =>
             Objects.collisionDetection(newObstacle.pos, obstacle.pos)
         ) && Objects.collisionDetection(newObstacle.pos, gs.foodPos);
@@ -51,7 +50,7 @@ function interception(gs, ctx) {
 }
 
 /**
- * @param {Pos[]} snake
+ * @param {Pos} snake[]
  * @returns {boolean}
  */
 export function selfCannibalism(snake) {

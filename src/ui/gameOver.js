@@ -57,7 +57,7 @@ function drawGameOverContent(gs) {
     scoreLabel.style.margin = '10px 0';
 
     const levelLabel = document.createElement('p');
-    levelLabel.textContent = `Level: ${Math.floor((gs.foodConsumption || 0) / 10) + 1}`;
+    levelLabel.textContent = `Level: ${gs.level}`;
     levelLabel.style.margin = '10px 0';
 
     const speedLabel = document.createElement('p');

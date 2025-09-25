@@ -45,9 +45,9 @@ test("should update the game stats panel when updateStats is called", () => {
 
     updateStats(updatedGameState);
 
-    const levelStat = document.getElementById('level');
-    const speedStat = document.getElementById('speedStat');
-    const scoreStat = document.getElementById('score');
+    const levelStat = document.shadowRoot.querySelector('#level');
+    const speedStat = document.shadowRoot.querySelector('#speedStat');
+    const scoreStat = document.shadowRoot.querySelector('#score');
 
     assert.strictEqual(levelStat.textContent, "Level: 2", "Level should be updated to 2");
     assert.strictEqual(speedStat.textContent, "Speed: 5", "Speed should be updated to 5");

@@ -94,18 +94,17 @@ export class MovingCanvas extends HTMLElement {
                 renderFood();
                 UI.updateStats(gameState, this.shadowRoot);
 
-                if (gameState.foodConsumption % 10 === 0) {
+                if (gameState.foodConsumption % 2 === 0) {
                     gameState = GameState.levelRender(gameState, ctx);
                 }
-                console.log('GameState', gameState, 'foodConsumption count', gameState.foodConsumption, 'Snake pos:', this.snake);
             } else {
                 this.snake.pop();
             }
 
             // Check boundary collision BEFORE adding head to snake
             // Snake should stay completely within the grey rectangle
-            if (head.x < cx || head.x === canvas.width - size ||
-                head.y < cy || head.y === canvas.height - size) {
+            if (head.x < cx || head.x >= canvas.width - size ||
+                head.y < cy || head.y >= canvas.height - size) {
                 this.handleNumber = cancelAnimationFrame(this.handleNumber);
                 showGameOver();
                 return;
@@ -128,8 +127,19 @@ export class MovingCanvas extends HTMLElement {
         gameState = GameState.initializeGameState();
         this.shadowRoot.appendChild(UI.drawGameStatsPanel(gameState));
 
-        draw();
-        renderFood();
+        // TODO : this need to go to its own UI component
+        //        should be a start/pause action
+        const btnStart = document.createElement('button')
+        btnStart.textContent = 'Start'
+        btnStart.style.border = 'solid'
+        btnStart.style.background = 'green'
+        btnStart.style.cursor = 'pointer '
+
+        btnStart.addEventListener('click', () => {
+            draw();
+            renderFood();
+        });
+        this.shadowRoot.appendChild(btnStart);
 
         window.addEventListener("keydown", (e) => {
             if (e.key === "ArrowUp" && this.direction !== "down") this.direction = "up";
@@ -138,7 +148,6 @@ export class MovingCanvas extends HTMLElement {
             else if (e.key === "ArrowRight" && this.direction !== "left") this.direction = "right";
             else if (e.key === ' ') {
                 this.handleNumber = cancelAnimationFrame(this.handleNumber);
-                console.log('Stopping the animation, animation handle is: ', this.handleNumber);
                 paused = !paused;
 
                 if (!paused) {

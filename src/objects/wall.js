@@ -12,18 +12,52 @@ const objectDim /* @type {BlockDimensions} */ = {
  */
 export function renderObject(ctx, collidable) {
     const dims /** @type {BlockDimensions} */ = args.canvasDimensions();
-    const objOrientation = Math.random() < 0.5;
+    const boundary /** {number} */ = 20;
+    let renderPos /* @type {Pos} */;
 
-    const renderPos /* @type {Pos} */ = {
-        x: randInt(dims.w, dims.x), 
-        y: randInt(dims.h, dims.y),
-        w: objOrientation ? objectDim.w : randInt(dims.h, dims.x),
-        h: objOrientation ? randInt(dims.h, dims.y) : objectDim.h,
+    /*do
+    {
+        const objOrientation = Math.random() < 0.5;
+        renderPos = {
+            x: randInt(dims.w, dims.x), 
+            y: randInt(dims.h, dims.y),
+            w: objOrientation ? objectDim.w : randInt(dims.w, dims.x),
+            h: objOrientation ? randInt(dims.h, dims.y) : objectDim.h,
+        };
     }
+    while (
+        renderPos.x < dims.x + boundary - 20 ||
+        renderPos.x + renderPos.y > dims.x + dims.w - boundary - 20||
+        renderPos.y < dims.y + boundary - 20 ||
+        renderPos.y + renderPos.h > dims.y + dims.h - boundary - 20
+    );*/
+    const objOrientation = Math.random() < 0.5;
+    renderPos = withBoundsWalls(dims, objOrientation);
+
     ctx.fillStyle = (collidable ? "red" : "green");
     ctx.fillRect(renderPos.x, renderPos.y, renderPos.w, renderPos.h);
 
     return { pos: renderPos, collidable: collidable };
+}
+
+/*
+ * @param {BlockDimensions} dims
+ * @param {number} objOrientation
+ * @returns {Pos}
+ */
+function withBoundsWalls(dims, objOrientation) {
+    let wall /* @type {Pos} */;
+    do {
+        wall = {
+            x: randInt(dims.w, dims.x), 
+            y: randInt(dims.h, dims.y),
+            w: objOrientation ? objectDim.w : randInt(dims.w, dims.x),
+            h: objOrientation ? randInt(dims.h, dims.y) : objectDim.h,
+        };
+        console.log('wall: ', wall)
+    } while (wall.x + wall.w >= dims.w && wall.y + wall.h >= dims.h) 
+
+    return wall;
 }
 
 /**

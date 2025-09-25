@@ -25,7 +25,6 @@ export function drawGameStatsPanel(gs) {
  * @param {ShadowRoot} shadow
  */
 export function updateStats(gs, shadow) {
-    console.log(gs);
     const levelStat = shadow.querySelector('#level');
     levelStat.textContent = `Level: ${gs.level}`;
 
@@ -62,9 +61,9 @@ function drawContent(gs) {
     scoreStat.textContent = `Score: ${gs.foodConsumption || 0}`;
 
     container.appendChild(title);
-    container.appendChild(levelStat);
-    container.appendChild(speedStat);
     container.appendChild(scoreStat);
+    container.appendChild(speedStat);
+    container.appendChild(levelStat);
 
     return container;
 }
