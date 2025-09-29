@@ -4,6 +4,8 @@ import * as args from "./utils/args.js";
 import * as UI from "./ui/gameStats.js";
 import * as GameOver from "./ui/gameOver.js";
 import * as btn from "./ui/button.js";
+import playIntroModern from "./gameplay/modern-intro.js";
+import playIntroRetro from "./gameplay/retro-intro.js";
 
 export class MovingCanvas extends HTMLElement {
 
@@ -134,7 +136,11 @@ export class MovingCanvas extends HTMLElement {
         gameState = GameState.initializeGameState();
         this.shadowRoot.appendChild(UI.drawGameStatsPanel(gameState));
 
+        playIntroModern(ctx, canvas, draw)
+        //playIntroRetro(ctx, canvas, draw)
+
         const btnStart = btn.btnStart(isPlaying, draw, renderFood);
+
         this.shadowRoot.appendChild(btnStart);
 
         window.addEventListener("keydown", (e) => {
