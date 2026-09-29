@@ -63,6 +63,7 @@ export class MovingCanvas extends HTMLElement {
             });
 
             gameState.walls.forEach(obstacle => {
+                console.log("wall obstacle", obstacle)
                 Objects.drawObstacle(ctx, obstacle.pos, true);
             });
 
@@ -84,12 +85,14 @@ export class MovingCanvas extends HTMLElement {
 
             gameState.walls.forEach(wall => {
                 if (Objects.collisionDetection(head, wall)) {
+                    console.log('Collision just happend', wall);
                     this.handleNumber = cancelAnimationFrame(this.handleNumber);
                     showGameOver();
                 }
             });
 
             if (GameState.selfCannibalism(this.snake)) {
+                console.log('canibalised', this.snake.length);
                 this.handleNumber = cancelAnimationFrame(this.handleNumber);
                 showGameOver();
             }

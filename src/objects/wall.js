@@ -39,7 +39,6 @@ function withBoundsWalls(dims, objOrientation) {
             w: objOrientation ? objectDim.w : randInt(dims.w, dims.x),
             h: objOrientation ? randInt(dims.h, dims.y) : objectDim.h,
         };
-        console.log('wall: ', wall)
     } while (wall.x + wall.w >= dims.w && wall.y + wall.h >= dims.h) 
 
     return wall;

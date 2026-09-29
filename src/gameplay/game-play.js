@@ -6,8 +6,8 @@ import * as cd from "../physics/collisionDetection.js";
 */
 export function initializeGameState() {
     return {
-        level: 3,
-        speed: 5,
+        level: 1,
+        speed: 1,
         foodPos: null,
         foodConsumption: 0,
         walls: [],
@@ -23,7 +23,7 @@ export function levelRender(gs, ctx) {
     gs.level++;
     gs.speed += 0.5;
 
-    if (gs.level > 1) {
+    if (gs.level > 3) {
         interception(gs, ctx);
     }
 
@@ -53,10 +53,11 @@ function interception(gs, ctx) {
  * @returns {boolean}
  */
 export function selfCannibalism(snake) {
-    if (snake.length < 4)
+    const minSnakeLength = 10;
+    if (snake.length < minSnakeLength)
         return false;
 
-    for (let i = 4; i < snake.length; i++) {
+    for (let i = minSnakeLength; i < snake.length; i++) {
         if (Objects.collisionDetection(snake[0], {pos: snake[i], collidable: true}))
             return true;
     }
