@@ -6,7 +6,7 @@ import * as cd from "../physics/collisionDetection.js";
 */
 export function initializeGameState() {
     return {
-        level: 1,
+        level: 0,
         speed: 1,
         foodPos: null,
         foodConsumption: 0,
@@ -20,7 +20,6 @@ export function initializeGameState() {
  * @returns {GameState} gs
  */
 export function levelRender(gs, ctx) {
-    gs.level++;
     gs.speed += 0.5;
 
     if (gs.level > 3) {

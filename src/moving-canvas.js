@@ -21,7 +21,6 @@ export class MovingCanvas extends HTMLElement {
         super();
         this.attachShadow({ mode: "open" });
 
-        let handleNumber /** @type {number} */ = 0;
         let paused /** @type boolean */ = false;
         let food /** @type {Collidable} */;
         let gameState /** @type {GameState} */;
@@ -63,7 +62,6 @@ export class MovingCanvas extends HTMLElement {
             });
 
             gameState.walls.forEach(obstacle => {
-                console.log("wall obstacle", obstacle)
                 Objects.drawObstacle(ctx, obstacle.pos, true);
             });
 
@@ -85,14 +83,12 @@ export class MovingCanvas extends HTMLElement {
 
             gameState.walls.forEach(wall => {
                 if (Objects.collisionDetection(head, wall)) {
-                    console.log('Collision just happend', wall);
                     this.handleNumber = cancelAnimationFrame(this.handleNumber);
                     showGameOver();
                 }
             });
 
             if (GameState.selfCannibalism(this.snake)) {
-                console.log('canibalised', this.snake.length);
                 this.handleNumber = cancelAnimationFrame(this.handleNumber);
                 showGameOver();
             }
@@ -103,10 +99,12 @@ export class MovingCanvas extends HTMLElement {
                 this.snake.unshift({ ...this.snake[0] });
 
                 renderFood();
-                UI.updateStats(gameState, this.shadowRoot);
 
                 if (gameState.foodConsumption % 2 === 0) {
+                    gameState.level++;
+                    console.log('GameState', gameState);
                     gameState = GameState.levelRender(gameState, ctx);
+                    UI.updateStats(gameState, this.shadowRoot);
                 }
             } else {
                 this.snake.pop();
@@ -127,8 +125,8 @@ export class MovingCanvas extends HTMLElement {
         function renderFood() {
             food = {
                 pos: {
-                    x: Objects.randInt(canvas.width - 10, cx),
-                    y: Objects.randInt(canvas.height - 10, cy),
+                    x: Objects.randInt(canvas.width - 20, cx),
+                    y: Objects.randInt(canvas.height - 20, cy),
                     w: size,
                     h: size
                 },

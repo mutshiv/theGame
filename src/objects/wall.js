@@ -12,7 +12,6 @@ const objectDim /* @type {BlockDimensions} */ = {
  */
 export function renderObject(ctx, collidable) {
     const dims /** @type {BlockDimensions} */ = args.canvasDimensions();
-    const boundary /** {number} */ = 20;
     const objOrientation = Math.random() < 0.5;
 
     let renderPos /* @type {Pos} */;
@@ -36,8 +35,8 @@ function withBoundsWalls(dims, objOrientation) {
         wall = {
             x: randInt(dims.w, dims.x), 
             y: randInt(dims.h, dims.y),
-            w: objOrientation ? objectDim.w : randInt(dims.w, dims.x),
-            h: objOrientation ? randInt(dims.h, dims.y) : objectDim.h,
+            w: objOrientation ? objectDim.w : randInt(dims.w - 100, dims.x + 50) / 2,
+            h: objOrientation ? randInt(dims.h - 100, dims.y + 50) / 2 : objectDim.h,
         };
     } while (wall.x + wall.w >= dims.w && wall.y + wall.h >= dims.h) 
 
@@ -53,14 +52,10 @@ export function collisionDetection(headPos, objPos) {
     if (objPos === undefined) return false;
     if (!objPos || !objPos.collidable) return false;
 
-    if (headPos.x < objPos.pos.x + objPos.pos.w
+    return headPos.x < objPos.pos.x + objPos.pos.w
         && headPos.x + headPos.w > objPos.pos.x
         && headPos.y < objPos.pos.y + objPos.pos.h
-        && headPos.y + headPos.h > objPos.pos.y) {
-			return true;
-		}
-
-    return false;
+        && headPos.y + headPos.h > objPos.pos.y
 }
 
 /**
