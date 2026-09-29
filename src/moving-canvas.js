@@ -102,7 +102,6 @@ export class MovingCanvas extends HTMLElement {
 
                 if (gameState.foodConsumption % 2 === 0) {
                     gameState.level++;
-                    console.log('GameState', gameState);
                     gameState = GameState.levelRender(gameState, ctx);
                     UI.updateStats(gameState, this.shadowRoot);
                 }
