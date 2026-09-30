@@ -5,7 +5,7 @@ import * as Objects from "../objects/wall.js";
 */
 export function initializeGameState() {
     return {
-        level: 0,
+        level: 1,
         speed: 1,
         foodPos: null,
         foodConsumption: 0,

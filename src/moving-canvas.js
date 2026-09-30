@@ -21,12 +21,12 @@ export class MovingCanvas extends HTMLElement {
         super();
         this.attachShadow({ mode: "open" });
 
-        let paused /** @type boolean */ = false;
         let food /** @type {Collidable} */;
         let gameState /** @type {GameState} */;
         let cx /** @type {number} */ = this.dims.x;
         let cy /** @type {number} */ = this.dims.y;
         let isPlaying /** @type boolean */ = false;
+        let isGameOver /** @type boolean */ = false;
 
         const canvas = document.createElement("canvas");
         canvas.width = this.dims.w;
@@ -46,6 +46,7 @@ export class MovingCanvas extends HTMLElement {
         const showGameOver = () => {
             const gameOverModal = GameOver.drawGameOverModal(gameState);
             document.body.appendChild(gameOverModal);
+            isGameOver = true;
         };
 
         /**
@@ -100,11 +101,11 @@ export class MovingCanvas extends HTMLElement {
 
                 renderFood();
 
-                if (gameState.foodConsumption % 2 === 0) {
+                if(gameState.foodConsumption % 5 === 0 )
                     gameState.level++;
-                    gameState = GameState.levelRender(gameState, ctx);
-                    UI.updateStats(gameState, this.shadowRoot);
-                }
+
+                gameState = GameState.levelRender(gameState, ctx);
+                UI.updateStats(gameState, this.shadowRoot);
             } else {
                 this.snake.pop();
             }
@@ -150,10 +151,10 @@ export class MovingCanvas extends HTMLElement {
             else if (e.key === "ArrowRight" && this.direction !== "left") this.direction = "right";
             else if (e.key === ' ') {
                 this.handleNumber = cancelAnimationFrame(this.handleNumber);
-                paused = !paused;
+                isPlaying = !isPlaying;
 
-                if (paused) {
-                    const gamePausedModal = GameOver.drawGamePausedModal(gameState, paused);
+                if (isPlaying && !isGameOver) {
+                    const gamePausedModal = GameOver.drawGamePausedModal(gameState, isPlaying);
                     document.body.appendChild(gamePausedModal);
                 }
                 else {

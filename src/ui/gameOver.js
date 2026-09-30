@@ -87,7 +87,7 @@ function drawGameOverContent(gs, isPlaying) {
 
 /**
  * @param {GameState} gameState
- * @param {Boolean} paused
+ * @param {boolean} paused
  * @returns {HTMLElement}
  */
 export function drawGamePausedModal(gs, paused) {
