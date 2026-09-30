@@ -1,5 +1,4 @@
 import * as Objects from "../objects/wall.js";
-import * as cd from "../physics/collisionDetection.js";
 
 /**
  * @returns {GameState} gameState

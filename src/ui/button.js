@@ -32,3 +32,36 @@ export function btnStart(isPlaying, draw, renderFood) {
 
     return btnStart;
 }
+
+/**
+* @param {boolean} isPlaying 
+* @param {function} listenerEvent 
+*
+* @returns {HTMLElement}
+*/
+export function btnGeneric(isPlaying, listenerEvent) {
+    const btnGeneric = document.createElement('button');
+
+    btnGeneric.textContent = !isPlaying? 'Restart Game' : 'Resume play';
+    btnGeneric.style.background = '#ff4444';
+    btnGeneric.style.color = 'white';
+    btnGeneric.style.border = 'none';
+    btnGeneric.style.padding = '15px 30px';
+    btnGeneric.style.fontSize = '1.1em';
+    btnGeneric.style.borderRadius = '5px';
+    btnGeneric.style.cursor = 'pointer';
+    btnGeneric.style.marginTop = '20px';
+    btnGeneric.style.transition = 'background 0.3s ease';
+
+    btnGeneric.addEventListener('mouseenter', () => {
+        btnGeneric.style.background = '#ff6666';
+    });
+
+    btnGeneric.addEventListener('mouseleave', () => {
+        btnGeneric.style.background = '#ff4444';
+    });
+
+    btnGeneric.addEventListener('click', listenerEvent);
+
+    return btnGeneric;
+}

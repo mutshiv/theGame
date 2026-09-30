@@ -152,7 +152,13 @@ export class MovingCanvas extends HTMLElement {
                 this.handleNumber = cancelAnimationFrame(this.handleNumber);
                 paused = !paused;
 
-                if (!paused) {
+                if (paused) {
+                    const gamePausedModal = GameOver.drawGamePausedModal(gameState, paused);
+                    document.body.appendChild(gamePausedModal);
+                }
+                else {
+                    const pausedModal = document.body.getElementsByClassName("game-paused-overlay")[0];
+                    document.body.removeChild(pausedModal);
                     draw();
                 }
             }
