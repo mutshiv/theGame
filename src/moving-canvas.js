@@ -171,5 +171,3 @@ export class MovingCanvas extends HTMLElement {
 }
 
 customElements.define("moving-canvas", MovingCanvas);
-
-
