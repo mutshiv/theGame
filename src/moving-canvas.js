@@ -4,6 +4,7 @@ import * as args from "./utils/args.js";
 import * as UI from "./ui/gameStats.js";
 import * as GameOver from "./ui/gameOver.js";
 import * as btn from "./ui/button.js";
+import * as i from "./ui/input.js";
 import playIntroModern from "./gameplay/modern-intro.js";
 import playIntroRetro from "./gameplay/retro-intro.js";
 
@@ -27,6 +28,7 @@ export class MovingCanvas extends HTMLElement {
         let cy /** @type {number} */ = this.dims.y;
         let isPlaying /** @type boolean */ = false;
         let isGameOver /** @type boolean */ = false;
+        let hasGameStarted /** @type boolean */ = false;
 
         const canvas = document.createElement("canvas");
         canvas.width = this.dims.w;
@@ -72,6 +74,7 @@ export class MovingCanvas extends HTMLElement {
 
             this.handleNumber = requestAnimationFrame(draw);
             moveSnake();
+            hasGameStarted = true;
         }
 
         const moveSnake = () => {
@@ -153,7 +156,7 @@ export class MovingCanvas extends HTMLElement {
                 this.handleNumber = cancelAnimationFrame(this.handleNumber);
                 isPlaying = !isPlaying;
 
-                if (isPlaying && !isGameOver) {
+                if(isPlaying && !isGameOver && hasGameStarted) {
                     const gamePausedModal = GameOver.drawGamePausedModal(gameState, isPlaying);
                     document.body.appendChild(gamePausedModal);
                 }
