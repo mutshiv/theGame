@@ -31,15 +31,16 @@ jobs:
         
         # Build for Unix-based systems (Linux/macOS server deployments)
         # Generates a standard extensionless Unix binary named 'thegame-linux'
-        ENV GOOS=linux GOARCH=amd64 go build -v \
+        GOOS=linux GOARCH=amd64 go build -v \
           -ldflags "-X main.Version=${VERSION}" \
           -o bin/thegame-linux ./cmd
 
         # Build for Windows systems
         # Generates a Windows executable file named 'thegame-windows.exe'
-        ENV GOOS=windows GOARCH=amd64 go build -v \
+        GOOS=windows GOARCH=amd64 go build -v \
           -ldflags "-X main.Version=${VERSION}" \
           -o bin/thegame-windows.exe ./cmd
+
 
     - name: Test
       run: go test -v ./...
