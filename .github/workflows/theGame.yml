@@ -1,7 +1,4 @@
-# This workflow will build a golang project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
-
-name: Go
+name: Go with JS UI Build
 
 on:
   push:
@@ -10,29 +7,54 @@ on:
       - 'v*'
   pull_request:
     branches: [ "main" ]
-    
+
 permissions:
   contents: write
-  
-jobs:
 
+jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
 
+    # 1. Set up Node.js to compile your Frontend UI
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-node-version: '20' # Change to your preferred Node version
+        cache: 'npm'
+        cache-dependency-path: package-lock.json
+
+    # 2. Build the JavaScript Frontend Assets
+    - name: Build UI Frontend
+      run: |
+        cd ui
+        npm install
+        npm run build # Generates the dist folder
+
+    # 3. Set up Go
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
         go-version: '1.23.2'
 
-    - name: Build
+    # 4. Compile Go (which embeds the fresh ui/dist folder)
+    # 4. Compile Go for multiple platforms (Embedding the fresh ui/dist folder)
+    - name: Build Go Backend
       run: |
-        # Get the clean tag name (e.g., v1.2.3), fallback to the short commit SHA if no tag exists
         VERSION=${GITHUB_REF_NAME:-$(git rev-parse --short HEAD)}
         
-        # Build and inject the version into the 'main' package
-        go build -v -ldflags "-X main.Version=${VERSION}" -o bin/ ./...
+        # Build for Unix-based systems (Linux/macOS server deployments)
+        # Generates a standard extensionless Unix binary named 'thegame-linux'
+        ENV GOOS=linux GOARCH=amd64 go build -v \
+          -ldflags "-X main.Version=${VERSION}" \
+          -o bin/thegame-linux ./cmd
+
+        # Build for Windows systems
+        # Generates a Windows executable file named 'thegame-windows.exe'
+        ENV GOOS=windows GOARCH=amd64 go build -v \
+          -ldflags "-X main.Version=${VERSION}" \
+          -o bin/thegame-windows.exe ./cmd
 
     - name: Test
       run: go test -v ./...
