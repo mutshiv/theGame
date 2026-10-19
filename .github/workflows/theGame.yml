@@ -17,22 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # 1. Set up Node.js to compile your Frontend UI
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-node-version: '20' # Change to your preferred Node version
-        cache: 'npm'
-        cache-dependency-path: package-lock.json
-
-    # 2. Build the JavaScript Frontend Assets
-    - name: Build UI Frontend
-      run: |
-        cd ui
-        npm install
-        npm run build # Generates the dist folder
-
-    # 3. Set up Go
+    # 1. Set up Go
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
